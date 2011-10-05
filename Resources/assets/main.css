@@ -1,0 +1,160 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#frame {
+	border-radius: 15px;				
+	background-color: rgba(80,80,80, 0.5); /* Do not use opacity */
+	padding: 8px;
+	margin: 0 auto;
+}
+
+#main {
+	background: #111;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+#search {
+	border: none;
+	border-radius: 8px;
+	outline: none;
+	background: rgba(66,6,66,0.9);
+	color: yellow;
+	font-size: 200%;
+	font-weight: bold;
+	width: 100%;
+	padding: 10px;
+}
+.working #search {
+	background-image: url(ajax-loader.gif);
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+#list-wrapper {
+	_display: none; /* Hiden by default */
+	width: 100%;
+	overflow: hidden;
+	max-height: 500px;
+	margin: 10px 0 0 0;
+	border-radius: 5px;
+}
+
+#list {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	list-style: none;
+	font-family: Arial, Helvetica, sans-serif;
+}
+#list li {
+	position: relative;
+	font-size: 12pt;
+	color: #e6e6e6;
+	background: #333;
+	_border-bottom: 1px solid #666;
+	margin: 0;
+	margin-bottom: 1px;
+	padding: 0.3em;
+}
+
+#list li:hover {
+	background: #303030;
+	cursor: pointer;
+	color: #efefef;
+}
+
+#list li.selected {
+	background: #222;
+	cursor: pointer;
+	color: #f0f0f0;	
+}
+
+#list li.checked .fext,
+#list li.checked .fsize {
+	background: rgba(230,230,230, 0.3);
+}
+
+#list .fname {
+	display: block;
+	
+	padding-right: 60px;
+	
+	/* This adds an ellipsis to long text on the right */
+	white-space: nowrap;  
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#list .ftime {
+	font-size: 10pt;
+	color: #888;
+	width: 50%;
+	display: inline-block;
+}
+
+#list .fsize_OLD {
+	font-size: 10pt;
+	color: #888;
+	width: 50%;
+	text-align: right;
+	display: inline-block;
+}
+
+#list .fsize {
+	font-size: 10pt;
+	display: block;
+	position: absolute;
+	top: 20px;
+	right: 4px;
+	width: 60px;
+	height: 16px;
+	padding: 2px 0 0 0;
+	text-align: center;
+	color: #888;
+	background: rgba(130,130,130, 0.1);
+	border-radius: 3px;
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
+
+#list .fext {
+	position: absolute;
+	display: block;
+	top: 4px;
+	right: 4px;
+	background: rgba(130,130,130, 0.1);
+	border-radius: 3px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+	color: #bbb;
+	width: 60px;
+	height: 24px
+	text-align: center;
+	font-size: 90%;
+	font-weight: strong;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+#list kbd {
+	display: none; /* hide by default */
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 60px;
+	height: 26px;
+	padding: 8px 0 0 0;
+	background: rgba(66,6,66,0.7);/* rgba(130,130,130, 0.7); */
+	border-radius: 3px;
+	color: yellow;
+	font-weight: strong;
+	text-align: center;
+	vertical-align:middle;
+}
+
+body {
+	overflow: hidden; /* avoids showing scroll bar on fade in */
+}

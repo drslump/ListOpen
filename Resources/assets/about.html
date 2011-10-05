@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>About</title>
+
+  <script src="app://lib/shortcut.js"></script>
+  <script>
+    var w = Titanium.UI.getCurrentWindow();
+
+    // Close when lossing focus
+    w.addEventListener(Titanium.UNFOCUSED, function(){
+      w.close();
+    });
+
+    // Close on Esc
+    shortcut.add('Esc', function(){
+      w.close();
+    });
+  </script>
+
+  <style>
+    body {
+      text-align: center;
+    }
+  </style>
+
+</head>
+<body>
+  <div id="logo">
+    <img width="256" height="256" src="app://assets/icon_512x512.png" />
+  </div>
+  <div id="copy">
+    <span id="about-name">ListOpen</span> <span id="about-version">0.3</span>
+    <br />
+    <span id="about-copy">&copy; Iván -DrSlump- Montes 2011</span>
+    <br />
+    <a id="about-url" target="_blank" href="http://github.com/drslump">web site</a>
+  </div>
+  <div id="credits">
+    <ul>
+      <li>Running on <a target="_blank" href="http://appcelerator.com">Titanium Desktop</a></li>
+      <li>Icon by <a target="_blank" href="http://gentleface.com/free_icon_set.html">Gentleface</a></li>
+    </ul>
+  </div>
+
+  <script>
+  document.getElementById('about-name').innerHTML = Titanium.App.getName();
+  document.getElementById('about-version').innerHTML = Titanium.App.getVersion();
+  document.getElementById('about-copy').innerHTML = Titanium.App.getCopyright();
+  document.getElementById('about-url').href = Titanium.App.getURL();
+  </script>
+</body>
+</html>

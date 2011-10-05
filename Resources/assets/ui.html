@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <title>UI</title>
+
+    <!-- jQuery needs to be initialized in each window -->
+    <script src="app://lib/jquery-1.6.4.js"></script>
+
+    <!-- Shortcuts handling -->	
+    <script src="app://lib/shortcut.js"></script>
+
+    <!-- Extended regular expressions -->
+    <script src="app://lib/xregexp.js"></script>
+
+
+    <!-- Custom scrollbars -->
+    <script src="app://lib/lionbars/jQuery.lionbars.0.2.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="app://lib/lionbars/lionbars.css" />
+
+    <!-- Application files -->
+    <script src="app://app/PathScanner.js"></script>
+
+    <script src="app://app/main.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="app://assets/main.css" />
+  </head>
+  <body>
+    <div id="frame">
+      <div id="main">
+        <input type="text" id="search" autocomplete="off" />
+        <div id="list-wrapper"> <!-- needed for lionbars -->
+          <ul id="list"></ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

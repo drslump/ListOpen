@@ -1,0 +1,189 @@
+<html>
+<head>
+	<title>UI</title>
+		
+	<!-- jQuery needs to be initialized in each window -->
+	<script src="lib/jquery-1.6.4.js"></script>		
+    <script src="lib/underscore.js"></script>
+    <script src="lib/underscore.string.js"></script>
+		
+	<!-- Shortcuts handling -->	
+	<script src="lib/shortcut.js"></script>	
+	
+	<!-- Custom scrollbars -->
+	<script src="lib/lionbars/jQuery.lionbars.0.2.1.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/lionbars/lionbars.css" />
+	
+	
+		
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	
+    <script>
+
+        $(function(){
+        
+            // Show the application with a fade in          
+            $(document.body).fadeIn(500);            
+
+            $('#list-wrapper').lionbars('dark', true);//, true, false);//false, true, true);
+
+
+            function adjustScroll($elem) {
+
+                // Lionbars plugin adds a wrapper for the scroll
+                var $w = $('#list-wrapper .nWrap');
+
+                var wHeight = $w.height();
+                var wTop = $w.scrollTop();
+                var wBottom = wTop + wHeight;
+
+                var eHeight = $elem.height();
+                var eTop = wTop + $elem.position().top;
+                var eBottom = eTop + eHeight;
+
+                if (eTop < wTop) {
+                    $w.scrollTop(eTop);
+                } else if (eBottom > wBottom) {
+                    $w.scrollTop(eTop - wHeight + eHeight*2);
+                }
+
+                console.log('wT: %o wB: %o et: %o eb: %o', wTop, wBottom, eTop, eBottom);
+            }
+
+
+
+		
+			var actions = {
+				narrower: function(){
+					width = Math.max(300, width-50);
+					centerWindow(width);
+				},
+				wider: function(){
+					// Fake a node to use jQuery animation framework
+					var node = document.createElement('div');
+					node.style.width = width + 'px';
+					
+					$(node).animate({ 
+						width: Math.min(maxW, width+50)
+					}, {
+						duration: 200,
+						queue: true,
+						step: function(now, fx){
+							T.API.debug(now);
+							centerWindow(Math.round(now));
+						},
+						complete: function(){
+							width = parseInt(this.style.width);
+						}
+					});
+				},
+				next: function(){
+					var $ul = $('#list');
+					var $selected = $ul.children('.selected');
+					var $next = $selected.next();
+					
+					if ($selected.length === 0) {
+						console.debug('Selecting first element');
+						$selected = $ul.children('li:first').addClass('selected');
+                        adjustScroll($selected);
+					} else if ($next.length > 0) {
+						console.debug('Selecting next element');
+						$selected.removeClass('selected');
+                        $next.addClass('selected');
+                        adjustScroll($next);
+                    } else {
+                        adjustScroll($selected);
+                    }
+
+				},
+				prev: function(){
+					var $ul = $('#list');
+					var $selected = $ul.children('.selected');
+					var $prev = $selected.prev('li');
+					
+					if ($selected.length === 0) {
+						console.debug('Selecting last element');
+                        $selected = $ul.children('li:last').addClass('selected');
+                        adjustScroll($selected);
+					} else if ($prev.length > 0) {
+						console.debug('Selecting previous element');
+						$selected.removeClass('selected');
+						$prev.addClass('selected');
+						adjustScroll($prev);
+                    } else {
+                        adjustScroll($selected);
+                    }
+				},
+				check: function(){
+					$('#list > .selected').toggleClass('checked');
+				},
+				checkAndNext: function(){
+					actions.check();
+					actions.next();
+				},
+				reload: function(){
+					openMacVim();
+				}
+			};
+			
+			var shortcuts = {
+				'Meta+Left': actions.narrower,
+				'Meta+Right': actions.wider,
+				'Ctrl+Left': actions.narrower,
+				'Ctrl+Right': actions.wider,
+				'Down': actions.next,
+				'Up': actions.prev,
+				'Space': actions.checkAndNext,
+				'Meta+R': actions.reload,
+				'Ctrl+R': actions.reload,
+				'Tab': actions.next,
+				'Shift+Tab': actions.prev
+			};
+			
+			_(shortcuts).each(function(v,k){
+				shortcut.add(k, v);
+			});
+			
+			
+			
+			$('#list').click(function(e){
+				$(this).children('li').removeClass('selected');
+				$(e.target).closest('li').addClass('selected');
+				if (e.ctrlKey || e.metaKey) {
+					actions.check();
+					return false;
+				}
+				
+				// Unselect all
+				$(this).children('li').removeClass('checked');
+			});
+			
+			
+			$(window).keydown(function(e){
+			    console.log('Meta: ' + e.metaKey + ' Key: ' + e.keyCode + ' Char: ' + String.fromCharCode(e.charCode));
+			});
+			$('#search').keyup(function(e){ 
+			    var nonChars = [9 /* Tag/S-Tab */, 32 /* space */, 37,38,39,40];
+			    console.log('Abbr: ' + this.value + ' Meta: ' + e.metaKey + ' Key: ' + e.keyCode + ' Char: ' + String.fromCharCode(e.charCode));
+			    if (!e.metaKey && e.charCode && -1 === nonChars.indexOf(e.keyCode)) {
+					worker.postMessage({path: path, abbr: this.value, items: items});
+				}
+			});
+				
+		});
+			
+				
+		</script>
+			
+	</head>
+	<body style="display: none">
+		<div id="frame">
+			<div id="main">
+				<input type="text" id="search" />
+                <div id="list-wrapper">
+				    <ul id="list"><li>foo</li><li>bar</li><li>foo</li><li>bar</li><li>foo</li><li>bar</li><li>foo</li><li>bar</li><li>foo</li><li>bar</li><li>foo</li><li>bar</li><li>foo</li><li>bar</li></ul>	
+                </div>
+			</div>
+		</div>
+	</body>
+</html>
