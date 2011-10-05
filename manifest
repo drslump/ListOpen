@@ -1,0 +1,21 @@
+#appname:Test
+#publisher:drslump
+#url:http://
+#image:default_app_logo.png
+#appid:test
+#desc:not specified
+#type:desktop
+#guid:4e89e02b-779d-4099-8136-9090bfb6b5ac
+runtime:1.2.0.RC4
+tiapp:1.2.0.RC4
+tifilesystem:1.2.0.RC4
+tiplatform:1.2.0.RC4
+tiui:1.2.0.RC4
+ticodec:1.2.0.RC4
+tidatabase:1.2.0.RC4
+timedia:1.2.0.RC4
+timonkey:1.2.0.RC4
+tinetwork:1.2.0.RC4
+tiprocess:1.2.0.RC4
+tiworker:1.2.0.RC4
+#tidrslump:1.2.0.RC4

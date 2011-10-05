@@ -1,0 +1,16 @@
+# Release notes
+
+## Early development
+
+This is an early development version. Nothing is expected to work at this
+stage :)
+
+### 4th October 2011
+
+  - Changed application and tray icons for a more stylish one
+  - About dialog now exists on unfocus and Esc key
+
+### 2nd October 2011
+
+  - Custom build launcher to replace Info.plist with custom version
+  - Improved path scanner with support for ignore regexp

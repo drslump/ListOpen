@@ -1,0 +1,116 @@
+X Module for custom url scheme and global key trigger
+    - Compile module
+    - Place xxx.dylib in /Library/Application Support/Titanium/modules/osx/tiXXXX/1.2.0RC4/
+    - Update 'manifest' file to include the new module: 'tiXXXX:1.2.0RC4
+
+- Linux
+  - Path scan: A notorious thing about linux is that it uses a cache for ls, thus subsequent operations 
+    are incredibly faster (http://www.linuxinsight.com/proc_sys_vm_drop_caches.html)
+
+- Paths are repeated continuosly, perhaps we can optimize memory usage for large lists by:
+  - Start the value with a symbol (^) which gets replaced by the path of the item just above
+    - Store paths in the list and use the relative symbols
+  - Keep two separate lists, one stores paths and the other filenames. The JS engine should cache
+    repeated strings efficiently and would avoid having to look back to find the previous path.
+    TODO: WebKit doesn't seem to work like Chrome, equal strings take up space :(
+
+- Modify lionbars.js to adjust dynamically to the changing size of the list
+
+- Implement scoring loop as a C++ module?
+
+- Score based on how frequently an item is selected? store this data somewhere?
+
+- Tray icon allows to choose default list/editor for when triggered without params
+
+- Find a way (maybe 3rd-party tool) to trigger it with a global shortcut
+
+- Cross platform
+
+  - We can also use a Titanium.Network.TCPServerSocket (or HTTPServer) and use simple shell scripts
+    to send the new commands. This has the advantatge of not needing a C++ module since everything
+    could be done with Titanium JS and shell scripts
+
+  - On Windows:
+    - Launch by Custom URL Protocol + DDE ?
+    - http://www.cix.co.uk/~gort/win32.htm (dde command)
+    - http://www.robvanderwoude.com/ddecommandline.php
+    - VBScript for better control http://www.emacswiki.org/emacs/EmacsClient#toc1
+    - https://support.shotgunsoftware.com/entries/86754-launching-external-applications-using-custom-protocols-rock-instead-of-http
+    - https://github.com/dolzenko/windows_protocol_handlers
+
+    - Restore focus to previous window with wscript and SendKeys('%{TAB}')
+
+  - On Linux
+    - Launch by Custom URL Protocol + DBus, dbus-send cli ?
+    - http://developer.pidgin.im/wiki/DbusHowto
+
+    - Restore focus with xwit / wmctrl ?
+
+	- Window transparency only seems to work with an accelerated desktop (ie: Unity), otherwise
+	  a black background is shown. So we might need a custom theme for Linux that is "squared"
+	  and fine tune the UI window size to match the contents. 
+
+- Create chrome/firefox extension for tabs/history to showcase that it's not only for paths
+
+- Load configuration (check extra/config.ini)
+
+- For the path matcher, check for a ".matcher" at the root (or scan backwards) to read customization
+  properties from it
+
+- Allow configurable "prefixes" (ie: v:, contr:), they limit the search to files matching a user
+  defined regexp.
+  
+- Check http://cocoatutorial.grapewave.com/2010/01/creating-a-status-bar-application/
+  By modifying the generated Info.plist we can hide the app menu and icon in the dock
+
+X Allow to select multiple items (drawer? just from the current list? space to select?)
+
+X Cmd+N selects the N entry in the list
+
+- List from ctags file
+
+- List from simple file with paths
+
+- Left/Right arrows with empty text navigate thru previous searches for the same path?
+
+- Launching without list/path show MRU lists
+
+- Themes are just simple CSS files
+
+- Add the ability to import Alfred themes (convert to css):
+	
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	        <key>backgroundColor</key>
+	        <string>rgba(251,215,0,1.00)</string>
+	        <key>borderColor</key>
+	        <string>rgba(251,215,0,0.50)</string>
+	        <key>dividerLineColor</key>
+	        <string>rgba(210,171,0,1.00)</string>
+	        <key>imagePrefix</key>
+	        <string>dark</string>
+	        <key>resultShortcutColor</key>
+	        <string>rgba(167,16,67,1.00)</string>
+	        <key>resultSubtextColor</key>
+	        <string>rgba(102,102,102,1.00)</string>
+	        <key>resultTextColor</key>
+	        <string>rgba(121,121,121,1.00)</string>
+	        <key>scrollbarColor</key>
+	        <string>rgba(51,51,51,1.00)</string>
+	        <key>searchFieldBackgroundColor</key>
+	        <string>rgba(251,125,9,1.00)</string>
+	        <key>searchFieldTextColor</key>
+	        <string>rgba(0,0,0,1.00)</string>
+	        <key>selectedResultBackgroundColor</key>
+	        <string>rgba(251,125,9,1.00)</string>
+	        <key>selectedResultForeground</key>
+	        <string>rgba(66,66,66,1.00)</string>
+	        <key>selectedResultShortcutColor</key>
+	        <string>rgba(35,12,53,1.00)</string>
+	        <key>selectedSubtextForeground</key>
+	        <string>rgba(102,102,102,1.00)</string>
+	</dict>
+	</plist> 
+	

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <guid>4e89e02b-779d-4099-8136-9090bfb6b5ac</guid>
+    
+    <!-- These values are edited/maintained by Titanium Developer -->
+    <id>listopen</id>
+    <name>ListOpen</name>
+    <version>0.1-alpha</version>
+    <publisher>Iván -DrSlump- Montes</publisher>
+    <url>http://pollinimini.net</url>
+    <description>a cool file launcher</description>
+    <icon>assets/icon_512x512.png</icon>
+    <copyright>© 2011 Iván -DrSlump- Montes</copyright>
+
+    <!-- Window Definition - these values can be edited -->
+    <window>
+        <id>initial</id>
+        <title>ListOpen</title>
+        <url>app://index.html</url>
+        <width>500</width>
+        <max-width>800</max-width>
+        <min-width>250</min-width>
+        <height>300</height>
+        <max-height>600</max-height>
+        <min-height>100</min-height>
+        <fullscreen>false</fullscreen>
+        <resizable>false</resizable>
+        <chrome scrollbars="false">false</chrome>
+        <transparent-background>true</transparent-background>
+        <maximizable>false</maximizable>
+        <minimizable>false</minimizable>
+        <closeable>false</closeable>
+        <tool-window>true</tool-window>
+    </window>
+</ti:app>
