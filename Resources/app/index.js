@@ -46,7 +46,10 @@
 
 try {
 
-  var tray = new APP.Tray();
+  var tray = new APP.Tray(function(){
+    // OSX triggers this when hiding the menu
+    // Windows when left-clicking it
+  });
   tray.setList('Opentel');
   tray.update();
 
@@ -70,8 +73,7 @@ try {
   // Wait until the window is ready to initialize
   w.addEventListener(Titanium.PAGE_LOADED, function(){
     var dom = w.getDOMWindow();
-    Titanium.API.debug(dom);
-    Titanium.API.debug('Changed: ' + dom.path);
+    Titanium.API.debug('Path: ' + dom.path);
     w.show();
   });
 

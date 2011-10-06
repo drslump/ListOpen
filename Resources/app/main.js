@@ -181,11 +181,15 @@ try {
 };
 
 
-var path = '/Users/drslump/www/thesims/modules/gs-app-ria/src';
-var path = '/Users/drslump/tmp/manyfiles/Zend';
-var path = '/Users/drslump/tmp/manyfiles/thesims'
-//var path = '/home/drslump/';//Titanium Studio Workspace/';
-// Z: 0.12 -> 0.09
+if (Titanium.platform === 'win32') {
+  var path = 'z:\\www\\thesims\\modules\\gs-app-ria\\src';
+} else if (Titanium.platform === 'linux') {
+  var path = '/home/drslump/';
+} else {
+  var path = '/Users/drslump/www/thesims/modules/gs-app-ria/src';
+  var path = '/Users/drslump/tmp/manyfiles/Zend';
+  var path = '/Users/drslump/tmp/manyfiles/thesims'
+}
 
 function openMacVim(){
   $('#frame').addClass('working');
