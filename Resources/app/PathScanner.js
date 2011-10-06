@@ -70,7 +70,8 @@ APP.PathScanner.prototype = {
   //    file2
   //    dir1/file1
   findByDir: function(path, cb){
-    var rootLen = path.length + 1,
+    var me = this,
+        rootLen = path.length + 1,
         items = [],
         cmd = ['C:\\Windows\\System32\\cmd.exe', '/C', 'dir', '/S', '/B', path];
 
@@ -169,7 +170,7 @@ APP.PathScanner.prototype = {
     path = path.nativePath();
 
     // Try to obtain the dirs using ls/dir commands (faster)
-    if (Titanium.platform === 'windows') {
+    if (Titanium.platform === 'win32') {
       this.findByDir(path, fallback);
     } else {
       this.findByLs(path, fallback);
