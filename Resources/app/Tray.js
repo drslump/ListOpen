@@ -2,7 +2,8 @@ var APP = APP || {};
 
 APP.Tray = function(callback){
 
-  this.tray = Titanium.UI.addTray('assets/icon_16x16.png');
+  var icon = _('assets/icon_16x16_%s.png').sprintf(Titanium.platform);
+  this.tray = Titanium.UI.addTray(icon, callback);
   this.tray.setHint( Titanium.App.getName() + ' ' + Titanium.App.getVersion() );
 
   this.menu = Titanium.UI.createMenu();
