@@ -15,37 +15,59 @@ APP.PathScanner.prototype = {
   //    file1
   //
   // * Linux  --color=never -N (force non-printable) -U (do not sort)
+  //
+  // * Windows  -LRANp --fast --color=never --streams=n
   findByLs: function(path, cb){
     var me = this,
         rootLen = path.length + 1,
         items = [],
-        cmd = Titanium.platform === 'osx'
-            ? ['/bin/ls', '-LRAp', '-w']
-            : ['/bin/ls', '-LRAp', '-NU', '--color=never'];
+        cmd, sep;
 
-    cmd.push(path);
+    switch (Titanium.platform) {
+    case 'osx':
+      cmd = ['/bin/ls', '-LRApw', path];
+      sep = '/';
+      break;
+    case 'linux':
+      cmd = ['/bin/ls', '-LRANUp', '--color=never', path];
+      sep = '/';
+      break;
+    case 'win32':
+      // Win32 has trouble reading non utf8 output from the command so weneed to use a batch file
+      // to redirect the output of ls.exe to iconv for converting it.
+
+      // Find the location of cmd.exe
+      var env = Titanium.API.getEnvironment();
+      if (!env['COMSPEC']) {
+        env['COMSPEC'] = 'c:\\windows\\system32\\cmd.exe';
+      }
+
+      cmd = [env['COMSPEC'], '/C', Titanium.App.appURLToPath('extra/win32/ls.bat'), path];
+      sep = '\\';
+      break;
+    }
+
 
     // Create a new process
-    cmd = Titanium.Process.createProcess({ args: cmd });
+    cmd = Titanium.Process.createProcess({ 
+      args: cmd
+    });
 
     // Process each line
-    // TODO: Unicode seems to work on OSX with UTF-8 english as locale
     cmd.setOnReadLine(function(ln){
-      // Note that we work with the given Bytes string to make all this somewhat faster
-
       // Empty line means a new path is comming
       if (!ln.length) { path = null; return; }
       // If no path is set means this line is one (remove colon)
       if (path === null) { path = ln.substr(0, ln.length-1); return; }
       // If filename ends in slash it is a directory
-      if (ln.charAt(ln.length-1) == '/') return;
+      if (ln.charAt(ln.length-1) == sep) return;
 
       // Check for errors (permission denied?)
-      if (ln.substr(0, 4) == 'ls: ') return; 
+      if (-1 !== ln.indexOf(': ')) return;
 
       // Convert path to relative
       if (path.length > rootLen) {
-        ln = path.substr(rootLen) + '/' + ln;
+        ln = path.substr(rootLen) + sep + ln;
       }
 
       // Check if we have to ignore it
@@ -55,15 +77,16 @@ APP.PathScanner.prototype = {
     });
 
     // Get the result
-    cmd.setOnExit(function(data){
-      // TODO: Check for errors
-      cb(items);
+    cmd.setOnExit(function(e){
+      cb( cmd.getExitCode() === 0 ? items : false );
     });
 
     // Run the command
     cmd.launch();
   },
 
+  // DEPRECATED: Win32 uses a bundled port of the ls command
+  //
   // dir /S (recurse) /B (bare format)
   //    file1
   //    dir1
@@ -88,9 +111,11 @@ APP.PathScanner.prototype = {
 
       // Try to guess if it's a directory
       if (ln.lastIndexOf('\\') >= ln.lastIndexOf('.')) {
-        if (Titanium.Filesystem.getFile(ln).isDirectory()) {
-          return;
-        }
+        try {
+          if (Titanium.Filesystem.getFile(ln).isDirectory()) {
+            return;
+          }
+        } catch (e) {}
       }
 
       // Convert path to relative
@@ -112,33 +137,45 @@ APP.PathScanner.prototype = {
     cmd.launch();
   },
 
+  // This is extremelly slow specially on Windows
   findByApi: function(path, cb){
     var me = this,
         rootLen = path.length + 1,
         items = [],
-        file = Titanium.Filesystem.getFile(path);
+        file;
 
-    (function recurse(file){ 
-      var i, ln,
-          files = file.getDirectoryListing(),
-          len = files.length;
+    try {
+      file = Titanium.Filesystem.getFile(path);
 
-      for (i=0; i<len; i++) {
-        // Remove root path
-        ln = files[i].toString().substr(rootLen);
+      (function recurse(file){ 
+        var i, ln, 
+            files = file.getDirectoryListing(),
+            len = files.length;
 
-        if (me.ignore && me.ignore.test(ln)) {
-          continue;
+        for (i=0; i<len; i++) {
+          try {
+            // Remove root path
+            ln = files[i].toString().substr(rootLen);
+          } catch (e) { 
+            continue; 
+          }
+
+          if (me.ignore && me.ignore.test(ln)) {
+            continue;
+          }
+
+          if (files[i].isDirectory()) {
+            recurse(files[i]);
+            continue;
+          }
+       
+          items.push(ln);
         }
+      })(file);
 
-        if (files[i].isDirectory()) {
-          recurse(files[i]);
-          continue;
-        }
-  
-        items.push(ln);
-      }
-    })(file);
+    } catch (e) { 
+      Titanium.API.warn('Exception trying to inspect path ' + path + ' (' + e.message + ')'); 
+    }
 
     cb(items);
   },
@@ -171,7 +208,7 @@ APP.PathScanner.prototype = {
 
     // Try to obtain the dirs using ls/dir commands (faster)
     if (Titanium.platform === 'win32') {
-      this.findByDir(path, fallback);
+      this.findByLs(path, fallback);
     } else {
       this.findByLs(path, fallback);
     }

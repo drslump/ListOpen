@@ -5,6 +5,14 @@
 This is an early development version. Nothing is expected to work at this
 stage :)
 
+### 7th October 2011
+
+  - Many fixes for the Windows version
+  - Included an ls windows port binary
+  - Included win_iconv.exe binary to work around a Titanium bug with non 
+    UTF8 output when running commands on Windows
+  - Check for error code when running the ls command
+
 ### 4th October 2011
 
   - Changed application and tray icons for a more stylish one

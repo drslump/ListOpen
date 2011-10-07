@@ -40,6 +40,12 @@ X Module for custom url scheme and global key trigger
 
     - Restore focus to previous window with wscript and SendKeys('%{TAB}')
 
+    - Dir command is very slow on mounted paths (smb, network, vmware shares, etc.)
+      The ls port by utools.com (http://utools.com/msls.app) performs very well in those cases and 
+      also on local paths.
+      The ls.exe binary can be bundled with the application and be used as the preferred method. 
+      Advanced users can use a configuration option to switch to the "dir" scanner.
+
   - On Linux
     - Launch by Custom URL Protocol + DBus, dbus-send cli ?
     - http://developer.pidgin.im/wiki/DbusHowto

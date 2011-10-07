@@ -183,6 +183,8 @@ try {
 
 if (Titanium.platform === 'win32') {
   var path = 'z:\\www\\thesims\\modules\\gs-app-ria\\src';
+  var path = 'c:\\tmp\\thesims';
+//  var path = 'c:\\tmp\\uni code';
 } else if (Titanium.platform === 'linux') {
   var path = '/home/drslump/';
 } else {
@@ -197,20 +199,24 @@ function openMacVim(){
   var scanner = new APP.PathScanner();
 
   scanner.ignore = XRegExp('\
-    (^|\/) ( \
+    (^|\/|\\\\) ( \
         \.git | \.hg | \.svn | \.sass-cache | build | tmp | log | \
         vendor\/(rails|gems|plugins) | \
         tags | \.DS_Store \
-    ) (\/|$)', 'x'
+    ) (\/|\\\\|$)', 'x'
   );
 
   scanner.scan(path, function(result){
     T.API.debug('List files: ' + result.length);
 
+    var dotted = _(result.length).reverse();
+    dotted = _(dotted).chop(3);
+    dotted = _(dotted).map(function(itm){ return _(itm).reverse(); }).reverse().join('.');
+
     // Notify of a scan completed
     var not = T.Notification.createNotification({
       title: 'Path scan completed',
-      message: 'Scanning for path ' + path + ' has completed succesfully with ' + result.length + ' files found',
+      message: 'Scanning job for path ' + path + ' has completed succesfully with ' + dotted + ' files found',
       timeout: 3
     });
     not.show();
