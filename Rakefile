@@ -16,6 +16,11 @@ namespace :build do
 
     # Override the generated Info.plist with our custom version
     cp "#{pwd}/Info.plist", "#{dest}/osx/ListOpen.app/Contents/Info.plist"
+
+    # Copy custom modules to build directory
+    mkdir_p "#{dest}/osx/modules"
+    cp_r "#{pwd}/modules/common/.", "#{dest}/osx/ListOpen.app/Contents/modules"
+    cp_r "#{pwd}/modules/osx/.", "#{dest}/osx/ListOpen.app/Contents/modules"
   end
 
   task :linux do
@@ -28,21 +33,30 @@ namespace :build do
     mkdir_p "#{dest}/linux"
 
     sh "#{tibuild} --noinstall -o linux -d '#{dest}/linux' '#{pwd}'"
+
+    # Copy custom modules to build directory
+    mkdir_p "#{dest}/osx/modules"
+    cp_r "#{pwd}/modules/common/.", "#{dest}/osx/ListOpen.app/modules"
+    cp_r "#{pwd}/modules/linux/.", "#{dest}/linux/ListOpen.app/modules"
   end
 
-  task :win32 do
+  task :cygwin do
     tibuild = '/cygdrive/c/Documents\ and\ Settings/Administrator/Application\ Data/Titanium/sdk/win32/1.2.0.RC4/tibuild.py'
+    python = '/cygdrive/c/Documents\ and\ Settings/Administrator/Application\ Data/Titanium/modules/win32/python/1.2.0.RC4/python'
 
     rm_f "#{dest}/win32"
 
     # Create the build directory and run the build process
     mkdir_p "#{dest}/win32"
 
-    tibuild_w = %x( cygpath -w #{tibuild} )
-    dest_w = %x( cygpath -w #{dest}/win32 )
-    pwd_w = %x( cygpath -w #{pwd} )
-    python_w = 'C:\Documents and Settings\Administrator\Application Data\Titanium\modules\win32\python\1.2.0.RC4\python'
-    python = '/cygdrive/c/Documents\ and\ Settings/Administrator/Application\ Data/Titanium/modules/win32/python/1.2.0.RC4/python'
+    tibuild_w = %x( cygpath -w #{tibuild} ).strip!
+    dest_w = %x( cygpath -w #{dest} ).strip!
+    pwd_w = %x( cygpath -w #{pwd} ).strip!
+
+    # Copy custom modules to build directory
+    mkdir_p "#{pwd}/modules"
+    cp_r "#{pwd}/modules/common/.", "#{dest}/win32/ListOpen/modules"
+    cp_r "#{pwd}/modules/win32/.", "#{dest}/win32/ListOpen/modules"
 
     # Before being able to run it we need to generate the packaging and run the installer
     #
@@ -56,10 +70,8 @@ namespace :build do
     # -a "c:\Documents and Settings\Administrator\Application Data\Titanium\sdk\win32\1.2.0.RC4" 
     # -d dist\win32 -p test.exe .
 
-    #sh "cmd /C \"\"#{python_w}\" \"#{tibuild_w.strip! || tibuild_w}\" --noinstall -o win32 -d \"#{dest_w.strip! || dest_w}\" \"#{pwd_w.strip! || pwd_w}\"\""
-    sh "#{python} \"#{tibuild_w.strip! || tibuild_w}\" -t network --noinstall -o win32 -d \"#{dest_w.strip! || dest_w}\" \"#{pwd_w.strip! || pwd_w}\""
+    sh "#{python} '#{tibuild_w}' -t network --noinstall -o win32 -d '#{dest_w}/win32' '#{pwd_w}'"
   end
-
 
 end
 
@@ -73,7 +85,7 @@ namespace :run do
     exec "#{dest}/linux/ListOpen/ListOpen", "--debug"
   end
 
-  task :win32 => "build:win32" do
+  task :cygwin => "build:cygwin" do
     exec "#{dest}/win32/ListOpen/ListOpen.exe", "--debug"
   end
 
