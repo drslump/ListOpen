@@ -55,14 +55,12 @@ try {
 
 
   var w = Titanium.UI.createWindow({
-      id		: 'ui',
-      url 	: 'app://assets/ui.html',
-      title : 'UI',
-      x 		: 100, // TODO: Calc. middle
-      y 		: 50,  // TODO: Calc.
+      id      : 'ui',
+      url     : 'app://assets/ui.html',
+      title   : 'UI',
       width   : 500,
       height  : 400,
-      topMost : false, //true,
+      topMost : true,
       visible : false,
       usingChrome: false,
       transparentBackground: true,
@@ -82,7 +80,7 @@ try {
   W.hide();
   
   
-  if (typeof Titanium.DrSlump !== 'undefined') {
+  if (typeof Titanium.DrSlump !== 'undefined' && Titanium.DrSlump.HANDLER_URL) {
     Titanium.API.addEventListener(Titanium.DrSlump.HANDLER_URL, function(e){
       Titanium.API.info('DRSLUMP_HANDLER_URL');
       Titanium.API.info(e.url);

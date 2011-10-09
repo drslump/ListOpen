@@ -6,11 +6,6 @@
   <script>
     var w = Titanium.UI.getCurrentWindow();
 
-    // Close when lossing focus
-    w.addEventListener(Titanium.UNFOCUSED, function(){
-      w.close();
-    });
-
     // Close on Esc
     shortcut.add('Esc', function(){
       w.close();
@@ -18,35 +13,111 @@
   </script>
 
   <style>
-    body {
+  body {
+      margin: 0.5em 0;
       text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+
+      background-image: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0.25, rgb(196,204,200)),
+        color-stop(0.45, rgb(191,191,191))
+      );
+  }
+  body.osx {
+      /* On OSX the window gets a nice gradient by default */
+      background-image: none;
+  }
+
+  #credits {
+      margin: 1em 0;
+      height: 8em;
+      overflow: auto;
+
+      padding: 0.5em;
+      text-align: left;
+      font-size: 80%;
+      
+      border: 2px solid #888;
+      border-left: 0;
+      border-right: 0;
+      background: #ccc;
+  }
+    #credits a {
+        font-weight: bold;
+        color: #333;
+        text-decoration: none;
     }
+    #credits a:hover {
+        text-decoration: underline;
+    }
+
+  #title {
+    margin: 0.5em 0;
+    font-weight: bold;
+    font-size: 120%;
+  }
+
+  #version {
+    font-size: 80%;
+  }
+
+  #links {
+    padding: 0.5em;
+  }
+  
+    #url {
+        font-size: 80%;
+        color: #444;
+        text-decoration: none;
+    }
+    #url:hover {
+        text-decoration: underline;
+    }
+
+  #copy {
+      position: absolute:
+      bottom: 0.5em;
+      font-size: 80%;
+      color: #444;
+  }
   </style>
 
 </head>
 <body>
   <div id="logo">
-    <img width="256" height="256" src="app://assets/icon_512x512.png" />
+    <img width="128" height="128" src="app://assets/icon_512x512.png" />
   </div>
-  <div id="copy">
-    <span id="about-name">ListOpen</span> <span id="about-version">0.3</span>
-    <br />
-    <span id="about-copy">&copy; Iván -DrSlump- Montes 2011</span>
-    <br />
-    <a id="about-url" target="_blank" href="http://github.com/drslump">web site</a>
-  </div>
-  <div id="credits">
-    <ul>
-      <li>Running on <a target="_blank" href="http://appcelerator.com">Titanium Desktop</a></li>
-      <li>Icon by <a target="_blank" href="http://gentleface.com/free_icon_set.html">Gentleface</a></li>
-    </ul>
+  
+  <div id="title">ListOpen</div>
+  <div id="version">Version 0.3</div>
+  <div id="links">
+    <a id="url" target="_blank" href="http://github.com/drslump">web site</a>
   </div>
 
+  <div id="credits">
+      Running on <a target="_blank" href="http://appcelerator.com">Titanium Desktop</a>
+      <br/>
+      Icon by <a target="_blank" href="http://gentleface.com/free_icon_set.html">Gentleface</a>
+      <br/>
+      Thanks to <em>Alan Klietz</em> for <a target="_blank" href="http://utools.com/msls.asp">msls</a>, a Windows GNU ls port.
+      <br/>
+      Thanks to <em>Yukihiro Nakadaira</em> for <a target="_blank" href="http://code.google.com/p/win-iconv">win_iconv</a>
+  </div>
+
+  <div id="copy">
+      &copy; Iván -DrSlump- Montes, 2011</span>
+  </div>
+  
+
   <script>
-  document.getElementById('about-name').innerHTML = Titanium.App.getName();
-  document.getElementById('about-version').innerHTML = Titanium.App.getVersion();
-  document.getElementById('about-copy').innerHTML = Titanium.App.getCopyright();
-  document.getElementById('about-url').href = Titanium.App.getURL();
+  document.body.className = Titanium.platform;
+  document.getElementById('title').innerHTML = Titanium.App.getName();
+  document.getElementById('version').innerHTML = 'Version ' + Titanium.App.getVersion();
+  document.getElementById('url').href = Titanium.App.getURL();
+  document.getElementById('copy').innerHTML = Titanium.App.getCopyright();
   </script>
 </body>
 </html>

@@ -186,7 +186,7 @@ if (Titanium.platform === 'win32') {
   var path = 'c:\\tmp\\thesims';
 //  var path = 'c:\\tmp\\uni code';
 } else if (Titanium.platform === 'linux') {
-  var path = '/home/drslump/';
+  var path = '/home/drslump/Desktop';
 } else {
   var path = '/Users/drslump/www/thesims/modules/gs-app-ria/src';
   var path = '/Users/drslump/tmp/manyfiles/Zend';
@@ -241,34 +241,41 @@ function openMacVim(){
 }
 
 try {
-  
-// Maximize to fetch the screen size (Is it the only way?)
-w.maximize();
-var maxW = w.getWidth();
-var maxH = w.getHeight();
-w.unmaximize();
+
+// Assuming that the window is initially created centered we can guess the screen size
+var maxW = Math.floor(2 * ( w.getX() + w.getWidth()/2 )),
+    maxH = Math.floor(2 * ( w.getY() + w.getHeight()/2 ));
 
 function centerWindow(width) {
-  // TODO: Make the height dynamic based on the content
-  var height = 600;
+  // Calculate the current content height
+  var height = $('#frame').outerHeight(true);
+  // OSX does not return the actual height at this time so we only adjust the
+  // height if it's above a minimum. Since we use transparent background the
+  // visual result is the same for the user.
+  if (height > 50 && w.getHeight() != height) {
+    w.setHeight(height);
+  }
     
-  // Position in the middle and at a 10% from the top
+  // Position in the center at a 15% from the top
   w.setX( Math.floor((maxW / 2) - (width / 2)) );
-  w.setY( Math.floor(maxH * 0.1) );	
+  w.setY( Math.floor(maxH * 0.15) );
 
   w.setWidth(width);
-  w.setHeight(height);
 }
-  
-    
+ 
+
 $(function(){
   var width = 600;
   centerWindow(width);
-      
-  // Make sure the window is at the top
+
+  // Hide the UI before showing the window
+  $(document.body).hide();
+
+  // Show the window (completely transparent at this point still)
+  w.show();
   w.setTopMost(true);
 
-  // Show the application with a fade in			
+  // Show the application with a fade in
   $(document.body).fadeIn(400);
 
 
@@ -284,13 +291,25 @@ $(function(){
       return;
     }
 
-    // Show the application with a fade in
+    // Fade out the window
     $(document.body).fadeOut(150, function(){
-      // HACK: To restore the previously active application we hide the
-      //       current application using an applescript command
-      var cmd = ['osascript', '-e', 'tell application "System Events" to keystroke "h" using command down'];
-      cmd = T.Process.createProcess(cmd);
-      cmd.launch();
+      w.hide();
+
+      switch (T.platform) {
+      case 'osx':
+        // To restore the previously active application we hide the current application 
+        // using an applescript command
+        var cmd = ['osascript', '-e', 'tell application "System Events" to keystroke "h" using command down'];
+        cmd = T.Process.createProcess(cmd);
+        cmd.launch();
+        break;
+      case 'linux':
+        // On Ubuntu hiding the window seems to restore the focus automatically
+        break;
+      case 'win32':
+        // On WinXP hiding the window restores the focus automatically
+        break;
+      }
     });
   });
 
@@ -350,30 +369,14 @@ $(function(){
   });			
 
 
-
   var actions = {
     narrower: function(){
       width = Math.max(300, width-50);
       centerWindow(width);
     },
     wider: function(){
-      // Fake a node to use jQuery animation framework
-      var node = document.createElement('div');
-      node.style.width = width + 'px';
-      
-      $(node).animate({ 
-        width: Math.min(maxW, width+50)
-      }, {
-        duration: 200,
-        queue: true,
-        step: function(now, fx){
-          T.API.debug(now);
-          centerWindow(Math.round(now));
-        },
-        complete: function(){
-          width = parseInt(this.style.width);
-        }
-      });
+      width = Math.min(maxW, width+50);
+      centerWindow(width);
     },
     next: function(){
       var $ul = $('#list');
@@ -388,7 +391,8 @@ $(function(){
         $selected.removeClass('selected');
         $selected = $next.addClass('selected');
       }
-                adjustScroll($selected);
+
+      adjustScroll($selected);
     },
     prev: function(){
       var $ul = $('#list');
@@ -403,7 +407,8 @@ $(function(){
         $selected.removeClass('selected');
         $selected = $prev.addClass('selected');
       }
-              adjustScroll($selected);	
+
+      adjustScroll($selected);	
     },
     check: function(n){
       var $el;
@@ -431,8 +436,8 @@ $(function(){
   var shortcuts = {
     'Meta+Left': actions.narrower,
     'Meta+Right': actions.wider,
-    'Ctrl+Left': actions.narrower,
-    'Ctrl+Right': actions.wider,
+    'Shift+Left': actions.narrower,
+    'Shift+Right': actions.wider,
     'Down': actions.next,
     'Up': actions.prev,
     'Space': actions.checkAndNext,

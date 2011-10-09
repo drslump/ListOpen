@@ -8,7 +8,9 @@
 //
 
 // Load dependencies
-importScripts('lib/Bits-js/lib/Bits.js')
+var require = Titanium.DrSlump.CommonJS.require;
+var Bits = require('Bits').Bits;
+
 importScripts('app/Search.js');
 
 
