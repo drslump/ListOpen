@@ -1,26 +1,31 @@
 <html>
 <head>
   <title>Reader</title>
-  <style>
-  </style>
 
   <script src="app://lib/jquery-1.6.4.js"></script>
   <script src="app://lib/markdown.js"></script>
+  <script src="app://lib/shortcut.js"></script>
 
   <script>
-  function render(contents){
-    var html = markdown.toHTML(contents);
+    var w = Titanium.UI.getCurrentWindow();
 
-    // Render the markdown in the body
-    $(document.body).html(html);
+    // Close on Esc
+    shortcut.add('Esc', function(){
+      w.close();
+    });
 
-    // Convert the first title into the window title and remove it
-    $('h1').first().each(function(){
+    function render(contents){
+      var html = markdown.toHTML(contents);
+
+      // Render the markdown in the body
+      $(document.body).html(html);
+
+      // Convert the first title into the window title and remove it
+      $('h1').first().each(function(){
         document.title = $(this).text();
-    }).remove();
-  }
+      }).remove();
+    }
   </script>
-
 </head>
 <body>
 </body>

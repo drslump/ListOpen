@@ -5,6 +5,11 @@
 This is an early development version. Nothing is expected to work at this
 stage :)
 
+### 9th October 2011
+
+  - Included a CommonJS module loader
+  - Improved the build task with support for custom modules
+
 ### 7th October 2011
 
   - Many fixes for the Windows version
