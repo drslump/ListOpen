@@ -35,9 +35,9 @@ namespace :build do
     sh "#{tibuild} --noinstall -o linux -d '#{dest}/linux' '#{pwd}'"
 
     # Copy custom modules to build directory
-    mkdir_p "#{dest}/osx/modules"
-    cp_r "#{pwd}/modules/common/.", "#{dest}/osx/ListOpen.app/modules"
-    cp_r "#{pwd}/modules/linux/.", "#{dest}/linux/ListOpen.app/modules"
+    mkdir_p "#{dest}/linux/modules"
+    cp_r "#{pwd}/modules/common/.", "#{dest}/linux/ListOpen/modules"
+    cp_r "#{pwd}/modules/linux/.", "#{dest}/linux/ListOpen/modules"
   end
 
   task :cygwin do
@@ -54,7 +54,7 @@ namespace :build do
     pwd_w = %x( cygpath -w #{pwd} ).strip!
 
     # Copy custom modules to build directory
-    mkdir_p "#{pwd}/modules"
+    mkdir_p "#{dest}/win32/modules"
     cp_r "#{pwd}/modules/common/.", "#{dest}/win32/ListOpen/modules"
     cp_r "#{pwd}/modules/win32/.", "#{dest}/win32/ListOpen/modules"
 
